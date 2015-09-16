@@ -58,15 +58,34 @@ function virtualSlotMachine() {
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
   var renderer = new THREE.WebGLRenderer();
-  renderer.setClearColor(new THREE.Color(0xB8EDFF, 1.0));
+  renderer.setClearColor(new THREE.Color(0x000000, 1.0));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   renderer.shadowMapEnabled = true;
   // create the ground plane
   var planeGeometry = new THREE.PlaneBufferGeometry(150, 150);
-  var planeMaterial = new THREE.MeshLambertMaterial({
+  /*var planeMaterial = new THREE.MeshLambertMaterial({
     color: 0xBBFF00
+  });*/
+
+
+  //Floor plane texture
+  var planeTexture = THREE.ImageUtils.loadTexture("images/tile.png"),
+    particleTexture = THREE.ImageUtils.loadTexture("images/particle.png");
+
+  var planeMaterial = new THREE.MeshPhongMaterial({
+    map: planeTexture
   });
+
+  var particleMaterial = new THREE.SpriteMaterial({
+    map: particleTexture,
+    transparent: true,
+    //blending: THREE.NormalBlending
+  });
+
+  planeTexture.wrapS = THREE.RepeatWrapping;
+  planeTexture.wrapT = THREE.RepeatWrapping;
+  planeTexture.repeat.set(8, 8);
 
   var plane = new THREE.Mesh(planeGeometry, planeMaterial);
   plane.receiveShadow = true;
@@ -78,10 +97,22 @@ function virtualSlotMachine() {
   // add the plane to the scene
   scene.add(plane);
 
+  //Define the array of particles
+  var ix = 0,
+    particle;
+  //particleMaterial = new THREE.SpriteMaterial();
+  for (ix = 0; ix < 100; ix += 1) {
+    particle = new THREE.Sprite(particleMaterial);
+    particle.position.set(Math.random() * 50, Math.random() * 50, 0);
+    //particle.position.set(ix, ix, 0);
+    //particle.scale.set(4, 4, 4);
+    scene.add(particle);
+  }
+
   // position and point the camera to the center of the scene
   camera.position.x = 25;
   camera.position.y = 10;
-  camera.position.z = 60;
+  camera.position.z = 0;
   camera.lookAt(scene.position);
 
   //Add an ambient light
