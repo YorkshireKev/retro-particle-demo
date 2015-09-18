@@ -39,7 +39,7 @@ SOFTWARE.
 ---------------------------------------------------------------------------
 */
 
-function virtualSlotMachine() {
+function particleDemo() {
   'use strict';
 
   function initStats() {
@@ -52,6 +52,7 @@ function virtualSlotMachine() {
     return stats;
   }
 
+  //Global boilder plate stuff
   var stats = initStats();
 
   var scene = new THREE.Scene();
@@ -61,13 +62,9 @@ function virtualSlotMachine() {
   renderer.setClearColor(new THREE.Color(0x000000, 1.0));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  renderer.shadowMapEnabled = true;
+  //renderer.shadowMapEnabled = true;
   // create the ground plane
   var planeGeometry = new THREE.PlaneBufferGeometry(150, 150);
-  /*var planeMaterial = new THREE.MeshLambertMaterial({
-    color: 0xBBFF00
-  });*/
-
 
   //Floor plane texture
   var planeTexture = THREE.ImageUtils.loadTexture("images/tile.png"),
@@ -79,7 +76,7 @@ function virtualSlotMachine() {
 
   var particleMaterial = new THREE.SpriteMaterial({
     map: particleTexture,
-    transparent: true,
+    transparent: true
     //blending: THREE.NormalBlending
   });
 
@@ -101,18 +98,19 @@ function virtualSlotMachine() {
   var ix = 0,
     particle;
   //particleMaterial = new THREE.SpriteMaterial();
-  for (ix = 0; ix < 100; ix += 1) {
+  for (ix = 0; ix < 700; ix += 1) {
     particle = new THREE.Sprite(particleMaterial);
-    particle.position.set(Math.random() * 50, Math.random() * 50, 0);
+    //particle.position.set((Math.random() * 150) - 75, (Math.random() * 50) - 10, (Math.random() * 120));
+    particle.position.set((Math.random() * 150) - 75, (Math.random() * 50) - 10, 0);
     //particle.position.set(ix, ix, 0);
     //particle.scale.set(4, 4, 4);
     scene.add(particle);
   }
 
   // position and point the camera to the center of the scene
-  camera.position.x = 25;
+  camera.position.x = 0;
   camera.position.y = 10;
-  camera.position.z = 0;
+  camera.position.z = 120;
   camera.lookAt(scene.position);
 
   //Add an ambient light
@@ -124,20 +122,6 @@ function virtualSlotMachine() {
   spotLight.position.set(20, 50, 100);
   spotLight.castShadow = true;
   scene.add(spotLight);
-
-
-  //Camera controls
-  var orbitControls = new THREE.OrbitControls(camera);
-  orbitControls.rotateSpeed = 1.0;
-  orbitControls.zoomSpeed = 1.0;
-  orbitControls.panSpeed = 1.0;
-  orbitControls.noPan = true;
-  orbitControls.maxPolarAngle = Math.PI / 2;
-  orbitControls.minAzimuthAngle = -Math.PI / 2;
-  orbitControls.maxAzimuthAngle = Math.PI / 2;
-  orbitControls.minDistance = 25;
-  orbitControls.maxDistance = 100;
-
 
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -152,16 +136,20 @@ function virtualSlotMachine() {
 
   var clock = new THREE.Clock();
 
-  function renderScene() {
+  function renderScene() {    //particle.position.set(ix, ix, 0);
+    //particle.scale.set(4, 4, 4);
     stats.update();
     var delta = clock.getDelta();
-    orbitControls.update(delta);
+    planeTexture.offset.y += delta * 1.4;
+    if (planeTexture.offset.y > 1) {
+      planeTexture.offset.y -= 1;
+    }
 
     window.requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
   }
 
   renderScene();
-} //end virtualSlotMachine
+} //end particleDemo
 
-window.onload = virtualSlotMachine;
+window.onload = particleDemo;
