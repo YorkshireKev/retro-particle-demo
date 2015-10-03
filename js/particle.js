@@ -57,22 +57,20 @@ function particleDemo() {
 
   //Create canvas to draw text/images that particales should morph to.
   var canvas = document.createElement('canvas');
-  canvas.width = 100;
-  canvas.height = 50;
+  canvas.width = 150;
+  canvas.height = 20;
   canvas.id = 'textPad';
   var ctx = canvas.getContext("2d");
   canvas.style.position = "absolute";
   canvas.style.left = '0px';
   canvas.style.top = '500px';
-  canvas.style.width = 100;
-  canvas.style.height = 50;
+  canvas.style.width = 150;
+  canvas.style.height = 20;
   canvas.style.border = "1px solid";
   canvas.style.zIndex = 30;
-  ctx.font = "15px Arial";
+  ctx.font = "25px Arial";
   ctx.fillStyle = "#FF0000";
-  ctx.fillText("Welcome to", 10, 15);
-  ctx.fillText("YorkshireKev's", 0, 30);
-  ctx.fillText("Particle Demo", 5, 45);
+  ctx.fillText("YorkshireKev", 0, 20);
   //ctx.fillText(".", 0, 30);
   document.body.appendChild(canvas); //remove this!
 
@@ -121,18 +119,24 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
-  var data = ctx.getImageData(0, 0, 100, 50).data;
-  for (ix = 0; ix < 400; ix += 4) {
-    for (iy = 0; iy < 50; iy += 1) {
+  var data = ctx.getImageData(0, 0, 150, 50).data;
+  for (ix = 0; ix < 600; ix += 4) {
+    for (iy = 0; iy < 20; iy += 1) {
       particle[iz] = new THREE.Sprite(particleMaterial);
-      if (data[ix + (iy * 400)] !== 0) {
-        particle[iz].position.set((ix / 4) - 50, (50 - iy) - 15, (Math.random() * 100));
+      if (data[ix + (iy * 600)] !== 0) {
+        particle[iz].position.set((ix / 4) - 75, (50 - iy) - 15, (Math.random() * 100));
         scene.add(particle[iz]);
-        iz += 1;
+        particle[iz].spare = false;
+        //iz += 1;
+      } else {
+        particle[iz].position.set((Math.random() * 150) - 75, (Math.random() * 50) - 15, (Math.random() * 100));
+        scene.add(particle[iz]);
+        particle[iz].spare = true;
       }
+      iz += 1;
     }
   }
-
+  console.log(iz);
 
   // position and point the camera to the center of the scene
   camera.position.x = 0;
@@ -173,7 +177,10 @@ function particleDemo() {
     }
 
     for (iz = 0; iz < particle.length; iz++) {
-      if (particle[iz].position.z > 0) {
+      if (particle[iz].position.z > 0 && particle[iz].spare === false) {
+        particle[iz].position.z -= delta * 10;
+      }
+      if (particle[iz].position.z > -100 && particle[iz].spare === true) {
         particle[iz].position.z -= delta * 10;
       }
     }
