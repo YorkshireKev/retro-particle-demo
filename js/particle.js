@@ -55,6 +55,28 @@ function particleDemo() {
   //Global boilder plate stuff
   var stats = initStats();
 
+  //Create canvas to draw text/images that particales should morph to.
+  var canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 50;
+  canvas.id = 'textPad';
+  var ctx = canvas.getContext("2d");
+  canvas.style.position = "absolute";
+  canvas.style.left = '0px';
+  canvas.style.top = '500px';
+  canvas.style.width = 100;
+  canvas.style.height = 50;
+  canvas.style.border = "1px solid";
+  canvas.style.zIndex = 30;
+  ctx.font = "15px Arial";
+  ctx.fillStyle = "#FF0000";
+  ctx.fillText("Welcome to", 10, 15);
+  ctx.fillText("YorkshireKev's", 0, 30);
+  ctx.fillText("Particle Demo", 5, 45);
+  //ctx.fillText(".", 0, 30);
+  document.body.appendChild(canvas); //remove this!
+
+
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -96,16 +118,21 @@ function particleDemo() {
 
   //Define the array of particles
   var ix = 0,
-    particle;
-  //particleMaterial = new THREE.SpriteMaterial();
-  for (ix = 0; ix < 700; ix += 1) {
-    particle = new THREE.Sprite(particleMaterial);
-    //particle.position.set((Math.random() * 150) - 75, (Math.random() * 50) - 10, (Math.random() * 120));
-    particle.position.set((Math.random() * 150) - 75, (Math.random() * 50) - 10, 0);
-    //particle.position.set(ix, ix, 0);
-    //particle.scale.set(4, 4, 4);
-    scene.add(particle);
+    iy = 0,
+    iz = 0,
+    particle = [];
+  var data = ctx.getImageData(0, 0, 100, 50).data;
+  for (ix = 0; ix < 400; ix += 4) {
+    for (iy = 0; iy < 50; iy += 1) {
+      particle[iz] = new THREE.Sprite(particleMaterial);
+      if (data[ix + (iy * 400)] !== 0) {
+        particle[iz].position.set((ix / 4) - 50, (50 - iy) - 15, (Math.random() * 100));
+        scene.add(particle[iz]);
+        iz += 1;
+      }
+    }
   }
+
 
   // position and point the camera to the center of the scene
   camera.position.x = 0;
@@ -136,13 +163,19 @@ function particleDemo() {
 
   var clock = new THREE.Clock();
 
-  function renderScene() {    //particle.position.set(ix, ix, 0);
+  function renderScene() { //particle.position.set(ix, ix, 0);
     //particle.scale.set(4, 4, 4);
     stats.update();
     var delta = clock.getDelta();
     planeTexture.offset.y += delta * 1.4;
     if (planeTexture.offset.y > 1) {
       planeTexture.offset.y -= 1;
+    }
+
+    for (iz = 0; iz < particle.length; iz++) {
+      if (particle[iz].position.z > 0) {
+        particle[iz].position.z -= delta * 10;
+      }
     }
 
     window.requestAnimationFrame(renderScene);
