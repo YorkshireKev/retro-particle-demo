@@ -119,21 +119,16 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
-  var data = ctx.getImageData(0, 0, 150, 50).data;
+  var data = ctx.getImageData(0, 0, 150, 20).data;
   for (ix = 0; ix < 600; ix += 4) {
     for (iy = 0; iy < 20; iy += 1) {
       particle[iz] = new THREE.Sprite(particleMaterial);
       if (data[ix + (iy * 600)] !== 0) {
         particle[iz].position.set((ix / 4) - 75, (50 - iy) - 15, (Math.random() * 100));
         scene.add(particle[iz]);
-        particle[iz].spare = false;
-        //iz += 1;
-      } else {
-        particle[iz].position.set((Math.random() * 150) - 75, (Math.random() * 50) - 15, (Math.random() * 100));
-        scene.add(particle[iz]);
-        particle[iz].spare = true;
-      }
-      iz += 1;
+        particle[iz].formedWord = false;
+        iz += 1;
+      } 
     }
   }
   console.log(iz);
@@ -165,6 +160,7 @@ function particleDemo() {
   document.body.appendChild(renderer.domElement);
 
 
+  var formedWordCount = 0;
   var clock = new THREE.Clock();
 
   function renderScene() { //particle.position.set(ix, ix, 0);
@@ -177,11 +173,21 @@ function particleDemo() {
     }
 
     for (iz = 0; iz < particle.length; iz++) {
-      if (particle[iz].position.z > 0 && particle[iz].spare === false) {
+      if (particle[iz].position.z > 0 && particle[iz].formedWord === false) {
         particle[iz].position.z -= delta * 10;
+      } else {
+        if (particle[iz].formedWord === false) {
+        particle[iz].formedWord = true;
+        formedWordCount += 1;
+        }
       }
-      if (particle[iz].position.z > -100 && particle[iz].spare === true) {
-        particle[iz].position.z -= delta * 10;
+    }
+    
+    console.log(formedWordCount + '-' + particle.length);
+    
+    if (formedWordCount +1 === particle.length) {
+      for (iz = 0; iz < particle.length; iz++) {
+        particle[iz].position.z -= delta * 50;
       }
     }
 
