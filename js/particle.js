@@ -57,20 +57,20 @@ function particleDemo() {
 
   //Create canvas to draw text/images that particales should morph to.
   var canvas = document.createElement('canvas');
-  canvas.width = 150;
+  canvas.width = 120;
   canvas.height = 20;
   canvas.id = 'textPad';
   var ctx = canvas.getContext("2d");
   canvas.style.position = "absolute";
   canvas.style.left = '0px';
   canvas.style.top = '500px';
-  canvas.style.width = 150;
+  canvas.style.width = 120;
   canvas.style.height = 20;
   canvas.style.border = "1px solid";
   canvas.style.zIndex = 30;
-  ctx.font = "25px Arial";
+  ctx.font = "20px Arial";
   ctx.fillStyle = "#FF0000";
-  ctx.fillText("YorkshireKev", 0, 20);
+  ctx.fillText("YorkshireKev", 0, 18);
   //ctx.fillText(".", 0, 30);
   document.body.appendChild(canvas); //remove this!
 
@@ -119,16 +119,19 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
-  var data = ctx.getImageData(0, 0, 150, 20).data;
-  for (ix = 0; ix < 600; ix += 4) {
+  var data = ctx.getImageData(0, 0, 120, 20).data;
+  for (ix = 0; ix < 480; ix += 4) {
     for (iy = 0; iy < 20; iy += 1) {
       particle[iz] = new THREE.Sprite(particleMaterial);
-      if (data[ix + (iy * 600)] !== 0) {
-        particle[iz].position.set((ix / 4) - 75, (50 - iy) - 15, (Math.random() * 100));
-        scene.add(particle[iz]);
-        particle[iz].formedWord = false;
-        iz += 1;
-      } 
+      particle[iz].position.set((ix / 4) - 60, (50 - iy) - 15, (Math.random() * 100));
+      particle[iz].isHome = false;
+      if (data[ix + (iy * 480)] !== 0) {
+        particle[iz].formesWord = true;
+      } else {
+        particle[iz].formesWord = false;
+      }
+      scene.add(particle[iz]);
+      iz += 1;
     }
   }
   console.log(iz);
@@ -160,7 +163,7 @@ function particleDemo() {
   document.body.appendChild(renderer.domElement);
 
 
-  var formedWordCount = 0;
+  var homeCount = 0;
   var clock = new THREE.Clock();
 
   function renderScene() { //particle.position.set(ix, ix, 0);
@@ -173,23 +176,24 @@ function particleDemo() {
     }
 
     for (iz = 0; iz < particle.length; iz++) {
-      if (particle[iz].position.z > 0 && particle[iz].formedWord === false) {
+      if (particle[iz].isHome === false) {
         particle[iz].position.z -= delta * 10;
-      } else {
-        if (particle[iz].formedWord === false) {
-        particle[iz].formedWord = true;
-        formedWordCount += 1;
+        if (particle[iz].formesWord === true && particle[iz].position.z <= 0) {
+          particle[iz].isHome = true;
+          homeCount += 1;
+        }
+        if (particle[iz].formesWord === false && particle[iz].position.z <= -150) {
+          particle[iz].isHome = true;
+          homeCount += 1;
         }
       }
     }
-    
-    console.log(formedWordCount + '-' + particle.length);
-    
-    if (formedWordCount +1 === particle.length) {
+
+    /*if (homeCount === particle.length) {
       for (iz = 0; iz < particle.length; iz++) {
         particle[iz].position.z -= delta * 50;
       }
-    }
+    }*/
 
     window.requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
