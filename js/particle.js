@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global THREE, Stats*/
+/*global THREE, Stats, TWEEN*/
 
 /*
 ---------------------------------------------------------------------------
@@ -119,22 +119,32 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
+  var tween;
   var data = ctx.getImageData(0, 0, 120, 20).data;
   for (ix = 0; ix < 480; ix += 4) {
     for (iy = 0; iy < 20; iy += 1) {
       particle[iz] = new THREE.Sprite(particleMaterial);
-      particle[iz].position.set((ix / 4) - 60, (50 - iy) - 15, (Math.random() * 100));
+      particle[iz].position.set(-60 + (Math.random() * 120), -10 + (Math.random() * 40), 30 + (Math.random() * 10));
       particle[iz].isHome = false;
       if (data[ix + (iy * 480)] !== 0) {
         particle[iz].formesWord = true;
+        tween = new TWEEN.Tween(particle[iz].position).to({
+          x: ((ix / 4) - 60),
+          y: ((50 - iy) - 15),
+          z: 0
+        }, 7000).yoyo(true).repeat(Infinity).easing(TWEEN.Easing.Quadratic.InOut).start(0);
       } else {
         particle[iz].formesWord = false;
+        tween = new TWEEN.Tween(particle[iz].position).to({
+          x: ((ix / 4) - 60),
+          y: ((50 - iy) - 15),
+          z: -150
+        }, 7000).yoyo(true).repeat(Infinity).easing(TWEEN.Easing.Quadratic.InOut).start(0);
       }
       scene.add(particle[iz]);
       iz += 1;
     }
   }
-  console.log(iz);
 
   // position and point the camera to the center of the scene
   camera.position.x = 0;
@@ -162,8 +172,6 @@ function particleDemo() {
   // add the output of the renderer to the html element
   document.body.appendChild(renderer.domElement);
 
-
-  var homeCount = 0;
   var clock = new THREE.Clock();
 
   function renderScene() { //particle.position.set(ix, ix, 0);
@@ -175,25 +183,7 @@ function particleDemo() {
       planeTexture.offset.y -= 1;
     }
 
-    for (iz = 0; iz < particle.length; iz++) {
-      if (particle[iz].isHome === false) {
-        particle[iz].position.z -= delta * 10;
-        if (particle[iz].formesWord === true && particle[iz].position.z <= 0) {
-          particle[iz].isHome = true;
-          homeCount += 1;
-        }
-        if (particle[iz].formesWord === false && particle[iz].position.z <= -150) {
-          particle[iz].isHome = true;
-          homeCount += 1;
-        }
-      }
-    }
-
-    /*if (homeCount === particle.length) {
-      for (iz = 0; iz < particle.length; iz++) {
-        particle[iz].position.z -= delta * 50;
-      }
-    }*/
+    TWEEN.update();
 
     window.requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
