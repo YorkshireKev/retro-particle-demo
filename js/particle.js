@@ -68,10 +68,6 @@ function particleDemo() {
   canvas.style.height = 20;
   canvas.style.border = "1px solid";
   canvas.style.zIndex = 30;
-  ctx.font = "20px Arial";
-  ctx.fillStyle = "#FF0000";
-  ctx.fillText("YorkshireKev", 0, 18);
-  //ctx.fillText(".", 0, 30);
   document.body.appendChild(canvas); //remove this!
 
   //some globals
@@ -79,7 +75,9 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
-  var tween;
+  var tween,
+    tween2,
+    tween3;
   var data = ctx.getImageData(0, 0, 120, 20).data;
 
   var scene = new THREE.Scene();
@@ -121,105 +119,107 @@ function particleDemo() {
   // add the plane to the scene
   scene.add(plane);
 
-  //Define the array of particles
-  iz = 0;
-  for (ix = 0; ix < 480; ix += 4) {
-    for (iy = 0; iy < 20; iy += 1) {
-      particle[iz] = new THREE.Sprite(particleMaterial);
-      particle[iz].position.set((ix / 4) - 60, (50 - iy) - 15, -90);
-      particle[iz].isHome = false;
-      if (data[ix + (iy * 480)] !== 0) {
-        particle[iz].formesWord = true;
-      } else {
-        particle[iz].formesWord = false;
+  function makeTextArray() {
+    data = ctx.getImageData(0, 0, 120, 20).data;
+    var textArray = [];
+    for (ix = 0; ix < 480; ix += 4) {
+      for (iy = 0; iy < 20; iy += 1) {
+        if (data[ix + (iy * 480)] !== 0) {
+          textArray.push(true);
+        } else {
+          textArray.push(false);
+        }
       }
-      tween = new TWEEN.Tween(particle[iz].position).to({
-        x: ((ix / 4) - 60),
-        y: ((50 - iy) - 15),
-        z: particle[iz].formesWord ? 0 : -150
-      }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start(3000);
-      scene.add(particle[iz]);
-      iz += 1;
+    }
+    return textArray;
+  }
+
+  //Define the array of particles
+  function defineParticles() {
+    //console.log("Array: " + textArr01.length);
+    iz = 0;
+    for (ix = 0; ix < 120; ix += 1) {
+      for (iy = 0; iy < 20; iy += 1) {
+        particle[iz] = new THREE.Sprite(particleMaterial);
+        particle[iz].position.set(ix - 60, (50 - iy) - 15, -90);
+        particle[iz].isHome = false;
+        particle[iz].formesWord = textArr01[iz];
+        console.log(particle[iz].formesWord + " " + textArr01[iz]);
+
+        //First morph
+        tween = new TWEEN.Tween(particle[iz].position).to({
+          x: (ix - 60),
+          y: ((50 - iy) - 15),
+          z: particle[iz].formesWord ? 0 : -150
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start(1000);
+
+        //2nd Morph
+        tween2 = new TWEEN.Tween(particle[iz].position).to({
+          x: (ix - 60),
+          y: ((50 - iy) - 15),
+          z: particle[iz].formesWord ? -150 : 0
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start(1000);
+
+        //Chain tweens together
+        tween.chain(tween2);
+        tween2.chain(tween);
+
+        //Add paticles to scene.
+        scene.add(particle[iz]);
+        iz += 1;
+      }
     }
   }
 
   function randomParticles() {
-    TWEEN.removeAll();
     iz = 0;
     for (ix = 0; ix < 480; ix += 4) {
       for (iy = 0; iy < 20; iy += 1) {
         particle[iz].formesWord = true;
-        tween = new TWEEN.Tween(particle[iz].position).to({
+        tween2 = new TWEEN.Tween(particle[iz].position).to({
           x: -60 + (Math.random() * 120),
           y: -10 + (Math.random() * 40),
           z: 30 + (Math.random() * 10)
-        }, 5000).easing(TWEEN.Easing.Quadratic.InOut).start();
+        }, 5000).easing(TWEEN.Easing.Quadratic.InOut).start(7000);
         iz += 1;
       }
     }
   }
 
-  function kickOffTween() {
-    TWEEN.removeAll();
-    data = ctx.getImageData(0, 0, 120, 20).data;
-    iz = 0;
-    for (ix = 0; ix < 480; ix += 4) {
-      for (iy = 0; iy < 20; iy += 1) {
-        if (data[ix + (iy * 480)] !== 0) {
-          particle[iz].formesWord = true;
-        } else {
-          particle[iz].formesWord = false;
-        }
-        tween = new TWEEN.Tween(particle[iz].position).to({
-          x: ((ix / 4) - 60),
-          y: ((50 - iy) - 15),
-          z: particle[iz].formesWord ? 0 : -150
-        }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start();
-        iz += 1;
-      }
-    }
+
+  function writeText01() {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, 120, 20);
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#FF0000";
+    ctx.fillText("YorkshireKev", 0, 18);
   }
 
-  /*var data = ctx.getImageData(0, 0, 120, 20).data;
-  for (ix = 0; ix < 480; ix += 4) {
-    for (iy = 0; iy < 20; iy += 1) {
-      particle[iz] = new THREE.Sprite(particleMaterial);
-      particle[iz].position.set(-60 + (Math.random() * 120), -10 + (Math.random() * 40), 30 + (Math.random() * 10));
-      particle[iz].isHome = false;
-      if (data[ix + (iy * 480)] !== 0) {
-        particle[iz].formesWord = true;
-      } else {
-        particle[iz].formesWord = false;
-      }
-      tween = new TWEEN.Tween(particle[iz].position).to({
-        x: ((ix / 4) - 60),
-        y: ((50 - iy) - 15),
-        z: particle[iz].formesWord ? 0 : -150
-      }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start(0);
-      scene.add(particle[iz]);
-      iz += 1;
-    }
-  }*/
-
-  function text1() {
+  function writeText02() {
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, 120, 20);
     ctx.font = "20px Arial";
     ctx.fillStyle = "#FF0000";
     ctx.fillText("Presents...", 0, 18);
-    kickOffTween();
-    //Set up next tect change here... <TODO>
   }
 
-  //Set up first text change...
-  setTimeout(function () {
-    randomParticles();
-  }, 11000);
 
-  //Set up first text change...
-  setTimeout(function () {
-    text1();
-  }, 15000);
+  //Populat all arrays for text transformations...
+  writeText01();
+  var textArr01 = makeTextArray();
+  writeText02();
+  var textArr02 = makeTextArray();
+
+  //Create particles...
+  defineParticles();
+
+  //console.log("Array: " + newArr.length);
+  //defineParticles();
+  //randomParticles();
+  //text1();
+  /*tween.chain(tween2);
+  tween2.chain(tween3);
+  tween3.chain(tween);*/
 
   // position and point the camera to the center of the scene
   camera.position.x = 0;
