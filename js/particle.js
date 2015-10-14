@@ -75,7 +75,7 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
-  var tween,
+  var tween1,
     tween2,
     tween3;
   var data = ctx.getImageData(0, 0, 120, 20).data;
@@ -144,25 +144,32 @@ function particleDemo() {
         particle[iz].position.set(ix - 60, (50 - iy) - 15, -90);
         particle[iz].isHome = false;
         particle[iz].formesWord = textArr01[iz];
-        console.log(particle[iz].formesWord + " " + textArr01[iz]);
 
         //First morph
-        tween = new TWEEN.Tween(particle[iz].position).to({
+        tween1 = new TWEEN.Tween(particle[iz].position).to({
           x: (ix - 60),
           y: ((50 - iy) - 15),
           z: particle[iz].formesWord ? 0 : -150
-        }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start(1000);
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);//.start(0);
 
         //2nd Morph
         tween2 = new TWEEN.Tween(particle[iz].position).to({
           x: (ix - 60),
           y: ((50 - iy) - 15),
           z: particle[iz].formesWord ? -150 : 0
-        }, 7000).easing(TWEEN.Easing.Quadratic.InOut).start(1000);
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);//start(0);
+
+        tween3 = new TWEEN.Tween(particle[iz].position).to({
+          x: -60 + (Math.random() * 120),
+          y: -10 + (Math.random() * 40),
+          z: 30 + (Math.random() * 10)
+        }, 5000).easing(TWEEN.Easing.Quadratic.InOut);//start(0);
 
         //Chain tweens together
-        tween.chain(tween2);
-        tween2.chain(tween);
+        tween1.chain(tween2);
+        tween2.chain(tween3);
+        tween3.chain(tween1);
+        tween1.start(3000);
 
         //Add paticles to scene.
         scene.add(particle[iz]);
