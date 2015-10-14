@@ -75,9 +75,6 @@ function particleDemo() {
     iy = 0,
     iz = 0,
     particle = [];
-  var tween1,
-    tween2,
-    tween3;
   var data = ctx.getImageData(0, 0, 120, 20).data;
 
   var scene = new THREE.Scene();
@@ -134,9 +131,23 @@ function particleDemo() {
     return textArray;
   }
 
+  var textArr01,
+    textArr02,
+    textArr03,
+    textArr04,
+    textArr05;
   //Define the array of particles
   function defineParticles() {
-    //console.log("Array: " + textArr01.length);
+    var tween1,
+      tween2,
+      tween3,
+      tween4,
+      tween5,
+      tween6,
+      tween7,
+      tween8,
+      tween9,
+      tween10;
     iz = 0;
     for (ix = 0; ix < 120; ix += 1) {
       for (iy = 0; iy < 20; iy += 1) {
@@ -150,25 +161,74 @@ function particleDemo() {
           x: (ix - 60),
           y: ((50 - iy) - 15),
           z: particle[iz].formesWord ? 0 : -150
-        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);//.start(0);
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
         //2nd Morph
         tween2 = new TWEEN.Tween(particle[iz].position).to({
           x: (ix - 60),
           y: ((50 - iy) - 15),
-          z: particle[iz].formesWord ? -150 : 0
-        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);//start(0);
+          z: -150
+        }, 4000).easing(TWEEN.Easing.Quadratic.InOut);
 
         tween3 = new TWEEN.Tween(particle[iz].position).to({
           x: -60 + (Math.random() * 120),
           y: -10 + (Math.random() * 40),
-          z: 30 + (Math.random() * 10)
-        }, 5000).easing(TWEEN.Easing.Quadratic.InOut);//start(0);
+          z: 30 + (Math.random() * 30)
+        }, 5000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween4 = new TWEEN.Tween(particle[iz].position).to({
+          x: (ix - 60),
+          y: ((50 - iy) - 15),
+          z: textArr02[iz] ? 0 : -150
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween5 = new TWEEN.Tween(particle[iz].position).to({
+          x: -60 + (Math.random() * 120),
+          y: -10 + (Math.random() * 40),
+          z: -150 + (Math.random() * 300)
+        }, 5000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween6 = new TWEEN.Tween(particle[iz].position).to({
+          x: (ix - 60),
+          y: ((50 - iy) - 15),
+          z: textArr03[iz] ? 0 : -200
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween7 = new TWEEN.Tween(particle[iz].position).to({
+          x: -60 + (Math.random() * 120),
+          y: -10 + (Math.random() * 40),
+          z: -150 + (Math.random() * 150)
+        }, 5000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween8 = new TWEEN.Tween(particle[iz].position).to({
+          x: (ix - 60),
+          y: ((50 - iy) - 15),
+          z: textArr04[iz] ? ix / 3 : -100 + (iy * 3)
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween9 = new TWEEN.Tween(particle[iz].position).to({
+          x: -60 + (Math.random() * 120),
+          y: -10 + (Math.random() * 40),
+          z: -30 + (Math.random() * 60)
+        }, 3000).easing(TWEEN.Easing.Quadratic.InOut);
+
+        tween10 = new TWEEN.Tween(particle[iz].position).to({
+          x: (ix - 60),
+          y: ((50 - iy) - 15),
+          z: textArr05[iz] ? 0 : -75
+        }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
         //Chain tweens together
         tween1.chain(tween2);
         tween2.chain(tween3);
-        tween3.chain(tween1);
+        tween3.chain(tween4);
+        tween4.chain(tween5);
+        tween5.chain(tween6);
+        tween6.chain(tween7);
+        tween7.chain(tween8);
+        tween8.chain(tween9);
+        tween9.chain(tween10);
+        tween10.chain(tween5);
         tween1.start(3000);
 
         //Add paticles to scene.
@@ -177,22 +237,6 @@ function particleDemo() {
       }
     }
   }
-
-  function randomParticles() {
-    iz = 0;
-    for (ix = 0; ix < 480; ix += 4) {
-      for (iy = 0; iy < 20; iy += 1) {
-        particle[iz].formesWord = true;
-        tween2 = new TWEEN.Tween(particle[iz].position).to({
-          x: -60 + (Math.random() * 120),
-          y: -10 + (Math.random() * 40),
-          z: 30 + (Math.random() * 10)
-        }, 5000).easing(TWEEN.Easing.Quadratic.InOut).start(7000);
-        iz += 1;
-      }
-    }
-  }
-
 
   function writeText01() {
     ctx.fillStyle = "#000000";
@@ -207,26 +251,48 @@ function particleDemo() {
     ctx.fillRect(0, 0, 120, 20);
     ctx.font = "20px Arial";
     ctx.fillStyle = "#FF0000";
-    ctx.fillText("Presents...", 0, 18);
+    ctx.fillText("Presents...", 10, 18);
+  }
+
+  function writeText03() {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, 120, 20);
+    ctx.font = "19px Arial";
+    ctx.fillStyle = "#FF0000";
+    ctx.fillText("Particle Demo", 0, 17);
+  }
+
+  function writeText04() {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, 120, 20);
+    ctx.font = "19px Arial";
+    ctx.fillStyle = "#FF0000";
+    ctx.fillText("16bit retro", 0, 17);
+  }
+
+  function writeText05() {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, 120, 20);
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#FF0000";
+    ctx.fillText("inspiration", 30, 18);
   }
 
 
   //Populat all arrays for text transformations...
   writeText01();
-  var textArr01 = makeTextArray();
+  textArr01 = makeTextArray();
   writeText02();
-  var textArr02 = makeTextArray();
+  textArr02 = makeTextArray();
+  writeText03();
+  textArr03 = makeTextArray();
+  writeText04();
+  textArr04 = makeTextArray();
+  writeText05();
+  textArr05 = makeTextArray();
 
   //Create particles...
   defineParticles();
-
-  //console.log("Array: " + newArr.length);
-  //defineParticles();
-  //randomParticles();
-  //text1();
-  /*tween.chain(tween2);
-  tween2.chain(tween3);
-  tween3.chain(tween);*/
 
   // position and point the camera to the center of the scene
   camera.position.x = 0;
