@@ -1,4 +1,5 @@
 /*jslint browser: true*/
+/*jslint indent: 2 */
 /*global THREE, Stats, TWEEN*/
 
 /*
@@ -68,7 +69,7 @@ function particleDemo() {
   canvas.style.height = 20;
   canvas.style.border = "1px solid";
   canvas.style.zIndex = 30;
-  document.body.appendChild(canvas); //remove this!
+  //document.body.appendChild(canvas); //remove this!
 
   //some globals
   var ix = 0,
@@ -215,7 +216,7 @@ function particleDemo() {
         tween10 = new TWEEN.Tween(particle[iz].position).to({
           x: (ix - 60),
           y: ((50 - iy) - 15),
-          z: textArr05[iz] ? 0 : -75
+          z: textArr05[iz] ? 10 + (ix / 3 ) : -75
         }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
         //Chain tweens together
@@ -275,7 +276,7 @@ function particleDemo() {
     ctx.fillRect(0, 0, 120, 20);
     ctx.font = "20px Arial";
     ctx.fillStyle = "#FF0000";
-    ctx.fillText("inspiration", 30, 18);
+    ctx.fillText("inspiration", 27, 18);
   }
 
 
