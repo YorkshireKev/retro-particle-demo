@@ -151,6 +151,8 @@ function particleDemo() {
       tween10;
     iz = 0;
     for (ix = 0; ix < 120; ix += 1) {
+    	//document.getElementById("counter").innerHTML = Math.floor((100 / 120) * ix) + "%";
+    	//console.log(Math.floor((100 / 120) * ix)  + "%");
       for (iy = 0; iy < 20; iy += 1) {
         particle[iz] = new THREE.Sprite(particleMaterial);
         particle[iz].position.set(ix - 60, (50 - iy) - 15, -90);
@@ -336,6 +338,9 @@ function particleDemo() {
     window.requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
   }
+
+  //Hide the 'loading' div section'
+  document.getElementById("crunching").style.display = 'none';
 
   renderScene();
 } //end particleDemo
