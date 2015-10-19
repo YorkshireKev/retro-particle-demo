@@ -1,5 +1,4 @@
 /*jslint browser: true*/
-/*jslint indent: 2 */
 /*global THREE, Stats, TWEEN*/
 
 /*
@@ -81,6 +80,8 @@ function particleDemo() {
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
+  scene.fog = new THREE.FogExp2(0x000000, 0.0080);
+
   var renderer = new THREE.WebGLRenderer();
   renderer.setClearColor(new THREE.Color(0x000000, 1.0));
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -99,8 +100,9 @@ function particleDemo() {
 
   var particleMaterial = new THREE.SpriteMaterial({
     map: particleTexture,
-    transparent: true
-    //blending: THREE.NormalBlending
+    transparent: true,
+    depthTest: false,
+    fog: false
   });
 
   planeTexture.wrapS = THREE.RepeatWrapping;
@@ -151,8 +153,8 @@ function particleDemo() {
       tween10;
     iz = 0;
     for (ix = 0; ix < 120; ix += 1) {
-    	//document.getElementById("counter").innerHTML = Math.floor((100 / 120) * ix) + "%";
-    	//console.log(Math.floor((100 / 120) * ix)  + "%");
+      //document.getElementById("counter").innerHTML = Math.floor((100 / 120) * ix) + "%";
+      //console.log(Math.floor((100 / 120) * ix)  + "%");
       for (iy = 0; iy < 20; iy += 1) {
         particle[iz] = new THREE.Sprite(particleMaterial);
         particle[iz].position.set(ix - 60, (50 - iy) - 15, -90);
@@ -218,7 +220,7 @@ function particleDemo() {
         tween10 = new TWEEN.Tween(particle[iz].position).to({
           x: (ix - 60),
           y: ((50 - iy) - 15),
-          z: textArr05[iz] ? 10 + (ix / 3 ) : -75
+          z: textArr05[iz] ? 10 + (ix / 3) : -75
         }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
         //Chain tweens together
