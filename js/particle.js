@@ -70,6 +70,30 @@ function particleDemo() {
   canvas.style.zIndex = 30;
   //document.body.appendChild(canvas); //remove this!
 
+  var canvas2 = document.createElement('canvas');
+  canvas2.width = 2048;
+  canvas2.height = 16;
+  canvas2.id = 'textPad2';
+  var ctx2 = canvas2.getContext("2d");
+  canvas2.style.position = "absolute";
+  canvas2.style.left = '0px';
+  canvas2.style.top = '500px';
+  canvas2.style.width = 1024;
+  canvas2.style.height = 8;
+  canvas2.style.border = "1px solid";
+  canvas2.style.zIndex = 30;
+  ctx2.fillStyle = "#ffffff";
+  ctx2.fillRect(0, 0, 2048, 16);
+  ctx2.font = "16px Arial";
+  ctx2.fillStyle = "#ff00ff";
+  ctx2.fillText("                                                     " +
+    "This particle demo was inspired by the 16 bit ST and Amiga demos" +
+    " of the late 1980's.    Coding and gfx by YorkshireKev. Music by Mr Mute!" +
+    "     I should probably write something deep and meaningful here..." +
+    " Oh well, never mind!", 0, 13);
+  var canvasMap = new THREE.Texture(canvas2);
+  //document.body.appendChild(canvas2); //remove this!
+
   //some globals
   var ix = 0,
     iy = 0,
@@ -86,7 +110,7 @@ function particleDemo() {
   renderer.setClearColor(new THREE.Color(0x000000, 1.0));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  //renderer.shadowMapEnabled = true;
+  renderer.shadowMapEnabled = false;
   // create the ground plane
   var planeGeometry = new THREE.PlaneBufferGeometry(150, 150);
 
@@ -118,6 +142,30 @@ function particleDemo() {
   plane.position.z = 0;
   // add the plane to the scene
   scene.add(plane);
+
+  //Add the text scroller
+  var scrollerGeometry = new THREE.PlaneBufferGeometry(50, 2);
+  var scrollerMaterial = new THREE.MeshLambertMaterial({
+    map: canvasMap,
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.7
+  });
+
+  var scroller = new THREE.Mesh(scrollerGeometry, scrollerMaterial);
+  scroller.position.z = 100;
+  canvasMap.repeat.set(0.09, 1);
+  scene.add(scroller);
+
+  canvasMap.needsUpdate = true;
+  var scrollerTween1 = new TWEEN.Tween(scroller.position).to({
+    y: 5
+  }, 1000).easing(TWEEN.Easing.Bounce.In);
+  var scrollerTween2 = new TWEEN.Tween(scroller.position).to({
+    y: 1
+  }, 1000).easing(TWEEN.Easing.Bounce.Out);
+  scrollerTween1.chain(scrollerTween2);
+  scrollerTween2.chain(scrollerTween1);
 
   function makeTextArray() {
     data = ctx.getImageData(0, 0, 120, 20).data;
@@ -234,7 +282,7 @@ function particleDemo() {
         tween8.chain(tween9);
         tween9.chain(tween10);
         tween10.chain(tween5);
-        tween1.start(3000);
+        tween1.start(15000);
 
         //Add paticles to scene.
         scene.add(particle[iz]);
@@ -242,6 +290,9 @@ function particleDemo() {
       }
     }
   }
+
+  //Start the scroller...
+  scrollerTween1.start(0);
 
   function writeText01() {
     ctx.fillStyle = "#000000";
@@ -333,6 +384,11 @@ function particleDemo() {
     planeTexture.offset.y += delta * 1.4;
     if (planeTexture.offset.y > 1) {
       planeTexture.offset.y -= 1;
+    }
+
+    canvasMap.offset.x += delta * 0.025;
+    if (canvasMap.offset.x > 1) {
+      canvasMap.offset.x -= 1;
     }
 
     TWEEN.update();
