@@ -102,7 +102,7 @@ function particleDemo() {
   var data = ctx.getImageData(0, 0, 120, 20).data;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 
   scene.fog = new THREE.FogExp2(0x000000, 0.0080);
 
@@ -124,7 +124,7 @@ function particleDemo() {
 
   var particleMaterial = new THREE.SpriteMaterial({
     map: particleTexture,
-    transparent: true,
+    transparent: false,
     depthTest: false,
     fog: false
   });
@@ -235,7 +235,7 @@ function particleDemo() {
           z: textArr02[iz] ? 0 : -150
         }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
-        tween5 = new TWEEN.Tween(particle[iz].position).to({
+        tween5 = new TWEEN.Tween(particle[iz].position).delay(1000).to({
           x: -60 + (Math.random() * 120),
           y: -10 + (Math.random() * 40),
           z: -150 + (Math.random() * 300)
@@ -247,7 +247,7 @@ function particleDemo() {
           z: textArr03[iz] ? 0 : -200
         }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
-        tween7 = new TWEEN.Tween(particle[iz].position).to({
+        tween7 = new TWEEN.Tween(particle[iz].position).delay(1000).to({
           x: -60 + (Math.random() * 120),
           y: -10 + (Math.random() * 40),
           z: -150 + (Math.random() * 150)
@@ -259,14 +259,15 @@ function particleDemo() {
           z: textArr04[iz] ? ix / 3 : -100 + (iy * 3)
         }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
 
-        tween9 = new TWEEN.Tween(particle[iz].position).to({
+        tween9 = new TWEEN.Tween(particle[iz].position).delay(1000).to({
           x: -60 + (Math.random() * 120),
           y: -10 + (Math.random() * 40),
           z: -30 + (Math.random() * 60)
         }, 3000).easing(TWEEN.Easing.Quadratic.InOut);
 
+        //inspiration
         tween10 = new TWEEN.Tween(particle[iz].position).to({
-          x: (ix - 60),
+          x: (ix - 80),
           y: ((50 - iy) - 15),
           z: textArr05[iz] ? 10 + (ix / 3) : -75
         }, 7000).easing(TWEEN.Easing.Quadratic.InOut);
