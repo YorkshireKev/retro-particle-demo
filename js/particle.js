@@ -41,6 +41,12 @@ SOFTWARE.
 
 function particleDemo() {
   'use strict';
+  var fullParticles = window.location.href.indexOf('lowsprites') !== -1 ? false : true;
+  if (fullParticles === true) {
+    document.getElementById("switch").innerHTML = '<a href="?q=lowsprites">Switch to LOW particle mode <br />(uses less system resources)</a>';
+  } else {
+    document.getElementById("switch").innerHTML = '<a href="?q=fullsprites">Switch to FULL particle mode<br />(uses more system resources)</a>';
+  }
 
   function initStats() {
     var stats = new Stats();
@@ -170,8 +176,8 @@ function particleDemo() {
   function makeTextArray() {
     data = ctx.getImageData(0, 0, 120, 20).data;
     var textArray = [];
-    for (ix = 0; ix < 480; ix += 4) {
-      for (iy = 0; iy < 20; iy += 1) {
+    for (ix = 0; ix < 480; ix += fullParticles ? 4 : 8) {
+      for (iy = 0; iy < 20; iy += fullParticles ? 1 : 2) {
         if (data[ix + (iy * 480)] !== 0) {
           textArray.push(true);
         } else {
@@ -200,10 +206,10 @@ function particleDemo() {
       tween9,
       tween10;
     iz = 0;
-    for (ix = 0; ix < 120; ix += 1) {
+    for (ix = 0; ix < 120; ix += fullParticles ? 1 : 2) {
       //document.getElementById("counter").innerHTML = Math.floor((100 / 120) * ix) + "%";
       //console.log(Math.floor((100 / 120) * ix)  + "%");
-      for (iy = 0; iy < 20; iy += 1) {
+      for (iy = 0; iy < 20; iy += fullParticles ? 1 : 2) {
         particle[iz] = new THREE.Sprite(particleMaterial);
         particle[iz].position.set(ix - 60, (50 - iy) - 15, -90);
         particle[iz].isHome = false;
@@ -283,7 +289,7 @@ function particleDemo() {
         tween8.chain(tween9);
         tween9.chain(tween10);
         tween10.chain(tween5);
-        tween1.start(15000);
+        tween1.start(fullParticles ? 15000 : 10000);
 
         //Add paticles to scene.
         scene.add(particle[iz]);
