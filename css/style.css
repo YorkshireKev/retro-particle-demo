@@ -38,6 +38,19 @@ canvas {
 	font-weight: bold;
 }
 
+#music {
+	text-align: right;
+	padding: 10px;
+	padding-top: 80px;
+	z-index: 15;
+	position: absolute;
+	right: 0;
+	cursor: pointer;
+}
+#speaker {
+	display: none;
+}
+
 #crunching {
   position: absolute;
   margin: auto;

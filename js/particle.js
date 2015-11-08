@@ -41,12 +41,14 @@ SOFTWARE.
 
 function particleDemo() {
   'use strict';
-  var fullParticles = window.location.href.indexOf('lowsprites') !== -1 ? false : true;
+  var fullParticles = window.location.href.indexOf('fullsprites') !== -1 ? true : false;
   if (fullParticles === true) {
     document.getElementById("switch").innerHTML = '<a href="?q=lowsprites">Switch to LOW particle mode <br />(uses less system resources)</a>';
   } else {
     document.getElementById("switch").innerHTML = '<a href="?q=fullsprites">Switch to FULL particle mode<br />(uses more system resources)</a>';
   }
+
+  var mute = false;
 
   function initStats() {
     var stats = new Stats();
@@ -90,13 +92,15 @@ function particleDemo() {
   canvas2.style.zIndex = 30;
   ctx2.fillStyle = "#ffffff";
   ctx2.fillRect(0, 0, 2048, 16);
-  ctx2.font = "16px Arial";
+  ctx2.font = "15px Arial";
   ctx2.fillStyle = "#ff00ff";
   ctx2.fillText("                                                     " +
-    "This particle demo was inspired by the 16 bit ST and Amiga demos" +
-    " of the late 1980's.    Coding and gfx by YorkshireKev. Music by Mr Mute!" +
-    "     I should probably write something deep and meaningful here..." +
-    " Oh well, never mind!", 0, 13);
+    "Particle demo was inspired by the 16bit ST and Amiga demos" +
+    " of the late 1980s. In old skool computing particles and sprites" +
+    " are considered to be the same thing, but 'retro sprite demo' sounded a bit naff!" +
+    "   Coding and graphics by Kev Ellis with retro style music by Daz Ellis.", 0, 12);
+  //"     I should probably write something deep and meaningful here..." +
+  //" Oh well, never mind!", 0, 13);
   var canvasMap = new THREE.Texture(canvas2);
   //document.body.appendChild(canvas2); //remove this!
 
@@ -404,8 +408,22 @@ function particleDemo() {
     renderer.render(scene, camera);
   }
 
-  //Hide the 'loading' div section'
+  //Hide the 'loading' div section' and start the music.
   document.getElementById("crunching").style.display = 'none';
+  document.getElementById("speaker").style.display = 'inline';
+  document.getElementById("demomusic").play();
+
+  document.getElementById("music").onclick = function () {
+    if (mute === true) {
+      document.getElementById('demomusic').play();
+      document.getElementById('speaker').src = 'images/music.png';
+      mute = false;
+    } else {
+      document.getElementById('demomusic').pause();
+      document.getElementById('speaker').src = 'images/mute.png';
+      mute = true;
+    }
+  };
 
   renderScene();
 } //end particleDemo
