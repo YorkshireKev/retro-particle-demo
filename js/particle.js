@@ -98,9 +98,7 @@ function particleDemo() {
     "Particle demo was inspired by the 16bit ST and Amiga demos" +
     " of the late 1980s. In old skool computing particles and sprites" +
     " are considered to be the same thing, but 'retro sprite demo' sounded a bit naff!" +
-    "   Coding and graphics by Kev Ellis with retro style music by Daz Ellis.", 0, 12);
-  //"     I should probably write something deep and meaningful here..." +
-  //" Oh well, never mind!", 0, 13);
+    "   Coding and graphics by Kev Ellis with retro style music by TotalFunk.", 0, 12);
   var canvasMap = new THREE.Texture(canvas2);
   //document.body.appendChild(canvas2); //remove this!
 
