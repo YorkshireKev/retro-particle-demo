@@ -49,7 +49,7 @@ function particleDemo() {
   }
 
   var music = new Howl({
-    urls: ['audio/music.mp3', 'audio/music.ogg'],
+    urls: ['audio/music.ogg', 'audio/music.mp3'],
     //urls: ['audio/orig.mp3'],
     autoplay: false,
     loop: true
