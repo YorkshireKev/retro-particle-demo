@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global THREE, Stats, TWEEN*/
+/*global THREE, Stats, TWEEN, Howl*/
 
 /*
 ---------------------------------------------------------------------------
@@ -48,6 +48,12 @@ function particleDemo() {
     document.getElementById("switch").innerHTML = '<a href="?q=fullsprites">Switch to FULL particle mode<br />(uses more system resources)</a>';
   }
 
+  var music = new Howl({
+    urls: ['audio/music.mp3', 'audio/music.ogg'],
+    //urls: ['audio/orig.mp3'],
+    autoplay: false,
+    loop: true
+  });
   var mute = false;
 
   function initStats() {
@@ -409,15 +415,15 @@ function particleDemo() {
   //Hide the 'loading' div section' and start the music.
   document.getElementById("crunching").style.display = 'none';
   document.getElementById("speaker").style.display = 'inline';
-  document.getElementById("demomusic").play();
+  music.play();
 
   document.getElementById("music").onclick = function () {
     if (mute === true) {
-      document.getElementById('demomusic').play();
+      music.play();
       document.getElementById('speaker').src = 'images/music.png';
       mute = false;
     } else {
-      document.getElementById('demomusic').pause();
+      music.pause();
       document.getElementById('speaker').src = 'images/mute.png';
       mute = true;
     }
